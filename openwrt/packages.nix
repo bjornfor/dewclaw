@@ -47,20 +47,20 @@ in
     deploySteps.packages = {
       priority = 80;
       copy = ''
-        scp ${depsApk} device:/tmp/deps-${version}.apk
-        scp ${depsIpk} device:/tmp/deps-${version}.ipk
+        scp ${depsApk} device:/tmp/${package_name}.apk
+        scp ${depsIpk} device:/tmp/${package_name}.ipk
       '';
       apply = ''
         if command -v apk >/dev/null; then
           if [ "${version}" != "$(apk list --installed --manifest "${package_name}" | cut -d' ' -f2)" ]; then
             apk update
             # TODO: sign packages?
-            apk add --allow-untrusted /tmp/deps-${version}.apk
+            apk add --allow-untrusted /tmp/${package_name}.apk
           fi
         elif command -v opkg >/dev/null; then
           if [ "${version}" != "$(opkg info ${package_name} | grep Version | cut -d' ' -f2)" ]; then
             opkg update
-            opkg install --autoremove --force-downgrade /tmp/deps-${version}.ipk
+            opkg install --autoremove --force-downgrade /tmp/${package_name}.ipk
           fi
         else
           echo "error: missing package manager (tried 'apk' and 'opkg')"
