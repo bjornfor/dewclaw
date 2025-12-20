@@ -28,6 +28,12 @@
           ...
         }:
         {
+          _module.args.pkgs = import inputs.nixpkgs {
+            inherit system;
+            overlays = [
+              (import ./overlay.nix)
+            ];
+          };
           formatter = pkgs.nixfmt-rfc-style;
           packages = {
             dewclaw-env = pkgs.callPackage ./default.nix {
